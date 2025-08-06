@@ -1,11 +1,14 @@
 import cors from 'cors'
 import express from 'express'
 import { errorHandlerMiddleware } from './middlewares/errorHandler'
+import { leadsRoutes } from './routes/leadsRoutes'
 
 const app = express()
+app.use(express.json())
 
 app.use(cors())
 
+app.use('/api/', leadsRoutes)
 app.use(errorHandlerMiddleware)
 
 const PORT = process.env.PORT || 3000
