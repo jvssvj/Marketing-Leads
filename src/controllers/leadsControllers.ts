@@ -1,15 +1,44 @@
 import { Handler } from "express";
 import { prisma } from "../database";
-import { CreateLeadRequestSchema } from "./schema/CreateLeadRequestSchema";
+import { CreateLeadRequestSchema, GetLeadsRequestSchema, UpdateLeadRequestSchema } from "./schema/CreateLeadRequestSchema";
 import { HttpError } from "../errors/HttpError";
 import z from "zod";
+import { Prisma } from "@prisma/client";
 
 export class LeadsController {
     index: Handler = async (req, res, next) => {
         try {
-            const leads = await prisma.lead.findMany()
-            if (leads.length === 0 || !leads) throw new HttpError(404, 'No leads found.')
-            res.json(leads)
+            const query = GetLeadsRequestSchema.parse(req.query)
+            const { page = "1", pageSize = "10", name, status, sortBy = "name", order = "asc" } = query
+
+            const pageNumber = Number(page)
+            const pageSizeNumber = Number(pageSize)
+            const where: Prisma.LeadWhereInput = {}
+
+            if (name) where.name = { contains: name, mode: "insensitive" }
+            if (status) where.status = status
+
+
+            const leads = await prisma.lead.findMany({
+                where,
+                skip: (pageNumber - 1) * pageSizeNumber,
+                take: pageSizeNumber,
+                orderBy: { [sortBy]: order }
+            })
+
+            const total = await prisma.lead.count({ where })
+            if (total === 0) throw new HttpError(404, 'No leads found.')
+
+            res.json({
+                data: leads,
+                meta: {
+                    page: pageNumber,
+                    pageSize: pageSizeNumber,
+                    total,
+                    totalPages: Math.ceil(total / pageSizeNumber)
+                }
+            })
+
         } catch (error) {
             next(error)
         }
@@ -54,17 +83,11 @@ export class LeadsController {
             const lead = await prisma.lead.findUnique({ where: { id } })
             if (!lead) throw new HttpError(404, 'Lead not found.')
 
-            const UpdateLeadSchema = z.object({
-                name: z.string().min(2).optional(),
-                email: z.email().optional(),
-                status: z.enum(['New', 'Qualified', 'Archived']).optional()
-            })
-
-            const data = UpdateLeadSchema.parse(req.body)
+            const UpdateLeadSchema = UpdateLeadRequestSchema.parse(req.body)
 
             const leadUpdated = await prisma.lead.update({
                 where: { id },
-                data
+                data: UpdateLeadSchema
             })
 
             res.json(leadUpdated)
