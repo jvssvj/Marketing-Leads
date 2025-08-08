@@ -1,8 +1,7 @@
 import { Handler } from "express";
 import { prisma } from "../database";
-import { CreateLeadRequestSchema, GetLeadsRequestSchema, UpdateLeadRequestSchema } from "./schema/CreateLeadRequestSchema";
+import { CreateLeadRequestSchema, GetLeadsRequestSchema, UpdateLeadRequestSchema } from "./schema/LeadRequestSchema";
 import { HttpError } from "../errors/HttpError";
-import z from "zod";
 import { Prisma } from "@prisma/client";
 
 export class LeadsController {
@@ -83,11 +82,11 @@ export class LeadsController {
             const lead = await prisma.lead.findUnique({ where: { id } })
             if (!lead) throw new HttpError(404, 'Lead not found.')
 
-            const UpdateLeadSchema = UpdateLeadRequestSchema.parse(req.body)
+            const body = UpdateLeadRequestSchema.parse(req.body)
 
             const leadUpdated = await prisma.lead.update({
                 where: { id },
-                data: UpdateLeadSchema
+                data: body
             })
 
             res.json(leadUpdated)
