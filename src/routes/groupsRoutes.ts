@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { GroupsControllers } from "../controllers/groupsControllers";
+import { GroupsControllers } from "../controllers/GroupsControllers";
 
 const groupsRoutes = Router()
 const groupsControllers = new GroupsControllers()

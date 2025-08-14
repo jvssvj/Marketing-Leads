@@ -3,7 +3,7 @@ import { prisma } from "../database";
 import { HttpError } from "../errors/HttpError";
 import { CreateCampaignRequestSchema, UpdateCampaignRequestSchema } from "./schema/CampaignsRequestSchema";
 
-export class CampaignsController {
+export class CampaignsControllers {
     index: Handler = async (req, res, next) => {
         try {
             const campaigns = await prisma.campaign.findMany()

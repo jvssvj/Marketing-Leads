@@ -4,7 +4,7 @@ import { CreateLeadRequestSchema, GetLeadsRequestSchema, UpdateLeadRequestSchema
 import { HttpError } from "../errors/HttpError";
 import { Prisma } from "@prisma/client";
 
-export class LeadsController {
+export class LeadsControllers {
     index: Handler = async (req, res, next) => {
         try {
             const query = GetLeadsRequestSchema.parse(req.query)

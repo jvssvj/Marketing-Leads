@@ -1,8 +1,9 @@
 import { Router } from "express";
-import { CampaignsController } from "../controllers/campaignsControllers";
+import { CampaignsControllers } from "../controllers/CampaignsControllers";
+
 
 const campaignsRoutes = Router()
-const campaignsController = new CampaignsController()
+const campaignsController = new CampaignsControllers()
 
 campaignsRoutes.get('/campaigns', campaignsController.index)
 campaignsRoutes.post('/campaigns', campaignsController.create)

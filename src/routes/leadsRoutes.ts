@@ -1,8 +1,8 @@
 import { Router } from "express";
-import { LeadsController } from "../controllers/leadsControllers";
+import { LeadsControllers } from "../controllers/LeadsControllers";
 
 const leadsRoutes = Router()
-const leadsControllers = new LeadsController()
+const leadsControllers = new LeadsControllers()
 
 leadsRoutes.get('/leads', leadsControllers.index)
 leadsRoutes.post('/leads', leadsControllers.create)
