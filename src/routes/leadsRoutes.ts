@@ -1,8 +1,10 @@
 import { Router } from "express";
 import { LeadsControllers } from "../controllers/LeadsControllers";
+import { PrismaLeadsRepository } from "../repositories/prisma/PrismaLeadsRepository";
 
 const leadsRoutes = Router()
-const leadsControllers = new LeadsControllers()
+const leadsRepository = new PrismaLeadsRepository()
+const leadsControllers = new LeadsControllers(leadsRepository)
 
 leadsRoutes.get('/leads', leadsControllers.index)
 leadsRoutes.post('/leads', leadsControllers.create)
