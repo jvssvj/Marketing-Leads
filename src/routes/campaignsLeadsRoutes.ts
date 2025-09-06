@@ -1,12 +1,19 @@
 import { Router } from "express";
-import { CampaignsLeadsControllers } from "../controllers/CampaignsLeadsControllers";
 
-const campaignsLeadsRoutes = Router()
-const campaignsLeadsControllers = new CampaignsLeadsControllers()
+import { PrismaCampaignsRepository } from "../repositories/prisma/PrismaCampaignsRepository";
+import { PrismaLeadsRepository } from "../repositories/prisma/PrismaLeadsRepository";
+import { CampaignLeadsController } from "../controllers/CampaignsLeadsControllers";
+import { CampaignsLeadsService } from "../services/CampaignsLeadsService";
 
-campaignsLeadsRoutes.get('/campaigns/:campaignId/leads', campaignsLeadsControllers.getLeads)
-campaignsLeadsRoutes.post('/campaigns/:campaignId/leads', campaignsLeadsControllers.addLead)
-campaignsLeadsRoutes.put('/campaigns/:campaignId/leads/:leadId', campaignsLeadsControllers.UpdateLeadStatus)
-campaignsLeadsRoutes.delete('/campaigns/:campaignId/leads/:leadId', campaignsLeadsControllers.removeLead)
+const campaignsLeadsRoutes = Router();
+const leadsRepository = new PrismaLeadsRepository();
+const campaignsRepository = new PrismaCampaignsRepository();
+const campaignsLeadsService = new CampaignsLeadsService(campaignsRepository, leadsRepository);
+const campaignsLeadsControllers = new CampaignLeadsController(campaignsLeadsService);
 
-export { campaignsLeadsRoutes }
+campaignsLeadsRoutes.get("/campaigns/:campaignId/leads", campaignsLeadsControllers.getLeads);
+campaignsLeadsRoutes.post("/campaigns/:campaignId/leads", campaignsLeadsControllers.addLead);
+campaignsLeadsRoutes.put("/campaigns/:campaignId/leads/:leadId", campaignsLeadsControllers.updateLeadStatus);
+campaignsLeadsRoutes.delete("/campaigns/:campaignId/leads/:leadId", campaignsLeadsControllers.removeLead);
+
+export { campaignsLeadsRoutes };
