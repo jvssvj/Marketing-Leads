@@ -12,6 +12,6 @@ const groupLeadsControllers = new GroupLeadsControllers(groupLeadsService);
 
 groupsLeadsRoutes.get("/groups/:groupId/leads", groupLeadsControllers.getLeads);
 groupsLeadsRoutes.post("/groups/:groupId/leads", groupLeadsControllers.addLead);
-groupsLeadsRoutes.post("/groups/:groupId/leads/leadId", groupLeadsControllers.removeLead);
+groupsLeadsRoutes.delete("/groups/:groupId/leads/leadId", groupLeadsControllers.removeLead);
 
 export { groupsLeadsRoutes };
